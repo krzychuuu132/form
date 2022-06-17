@@ -1,12 +1,13 @@
 import Navigation from "components/organisms/Navigation/Navigation";
 import React from "react";
+import { Wrapper } from "./MainTemplate.styles";
 
-const MainTemplate = ({ children }) => {
+const MainTemplate = ({ children }): JSX.Element => {
   return (
-    <div>
+    <Wrapper>
       <Navigation />
       {children}
-    </div>
+    </Wrapper>
   );
 };
 
