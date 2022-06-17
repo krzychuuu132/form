@@ -1,15 +1,11 @@
-### `npm start`
+### `RUN THE PROJECT`
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+1. If you clone the repository you should run npm install in the root project
+2. Then you have to type npm start in the console and press enter
+3. To view project in the browser you should open http://localhost:3000
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### `BUILD TH PROJECT`
 
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+1. You have to run npm run build in the root project
+2. Then The build is minified and the filenames include the hashes.\
+   Your app is ready to be deployed!

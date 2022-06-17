@@ -1,9 +1,9 @@
 import React from "react";
 
-const Error404 = () => {
+const Error404 = (): JSX.Element => {
   return (
     <div>
-      <h1>Coś poszło nie tak!</h1>
+      <h1>Something went wrong!</h1>
     </div>
   );
 };
