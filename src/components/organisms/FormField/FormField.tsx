@@ -79,7 +79,7 @@ const FormField = () => {
         <StyledLabel htmlFor="gender">Gender</StyledLabel>
       </StyledCheckboxWrapper>
       <StyledLoaderWrapper>
-        <Button type="submit" className={isValid ? "" : "disabled"} title="submit" disabled={!isValid} />
+        <Button type="submit" className={!isValid || loading ? "disabled" : ""} title="submit" disabled={!isValid || loading} />
         {loading ? <Loader /> : null}
       </StyledLoaderWrapper>
     </StyledForm>
