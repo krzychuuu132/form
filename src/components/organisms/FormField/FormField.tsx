@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { StyledCheckboxWrapper, StyledForm, StyledLoaderWrapper } from "./FormField.styles";
-import axios from "axios";
 
 import Button from "components/atoms/Button/Button";
 import ErrorMessage from "components/atoms/ErrorMessage/ErrorMessage";
 import { StyledInput, StyledLabel } from "components/atoms/Input/Input.styles";
-import { EmailResponseData, FormData } from "interfaces";
+import { FormData } from "interfaces";
 import Loader from "components/atoms/Loader/Loader";
+import { useEmailValidation } from "hooks/useEmailValidation";
 
 const errorMessages = {
   name: "name > 3 characters",
@@ -22,26 +22,18 @@ const FormField = () => {
     handleSubmit,
     formState: { errors, isValid },
     setError,
+    watch,
     clearErrors,
   } = useForm<FormData>({
     mode: "onChange",
   });
 
-  const handleChangeEmail = async (e: React.FormEvent<HTMLInputElement>): Promise<void> => {
-    const { value } = e.currentTarget;
-    try {
-      setLoading(true);
-      const response: EmailResponseData = await axios.get(`/api/email-validator.php?email=${value === "" ? "''" : value}`);
-      if (!response.data.validation_status) {
-        await setError("email", { type: "custom", message: `email ${response.data.status_message}` });
-      } else {
-        clearErrors("email");
-      }
-    } catch (err) {
-      setError("email", { type: "custom", message: err });
-    } finally {
-      setLoading(false);
-    }
+  const email: string = watch("email", "initalvalue");
+
+  useEmailValidation(email, null, setError, clearErrors, setLoading);
+
+  const handleChangeEmail = (): void => {
+    setLoading(true);
   };
 
   const handleFormSubmit = (data: FormData): void => {
@@ -56,7 +48,10 @@ const FormField = () => {
       <StyledInput
         type="text"
         placeholder="Type name"
-        {...register("name", { required: { value: true, message: errorMessages.name }, minLength: { value: 4, message: errorMessages.name } })}
+        {...register("name", {
+          required: { value: true, message: errorMessages.name },
+          minLength: { value: 4, message: errorMessages.name },
+        })}
       />
       {errors.name ? <ErrorMessage message={errors.name.message} /> : null}
       <StyledLabel>Surname</StyledLabel>
@@ -72,7 +67,16 @@ const FormField = () => {
       <StyledLabel>Birth Date</StyledLabel>
       <StyledInput type="date" placeholder="Type birth date" {...register("birthDate", { required: false })} />
       <StyledLabel>Email</StyledLabel>
-      <StyledInput type="email" placeholder="Type email" {...register("email", { required: true, onChange: handleChangeEmail })} />
+      <StyledInput
+        type="email"
+        placeholder="Type email"
+        {...register("email", { required: true, onChange: handleChangeEmail })}
+        onKeyPress={(e) => {
+          if (e.key === "%") {
+            e.preventDefault();
+          }
+        }}
+      />
       {errors.email ? <ErrorMessage message={errors.email.message} /> : null}
       <StyledCheckboxWrapper>
         <StyledInput type="checkbox" {...register("gender", { required: false })} id="gender" />
