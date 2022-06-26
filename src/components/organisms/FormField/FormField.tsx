@@ -20,7 +20,7 @@ const FormField = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors, isValid },
+    formState: { errors, isValid, dirtyFields },
     setError,
     watch,
     clearErrors,
@@ -30,11 +30,7 @@ const FormField = () => {
 
   const email: string = watch("email", "initalvalue");
 
-  useEmailValidation(email, null, setError, clearErrors, setLoading);
-
-  const handleChangeEmail = (): void => {
-    setLoading(true);
-  };
+  useEmailValidation(email, setError, clearErrors, setLoading, dirtyFields.email);
 
   const handleFormSubmit = (data: FormData): void => {
     if (isValid) {
@@ -70,7 +66,7 @@ const FormField = () => {
       <StyledInput
         type="email"
         placeholder="Type email"
-        {...register("email", { required: true, onChange: handleChangeEmail })}
+        {...register("email", { required: true })}
         onKeyPress={(e) => {
           if (e.key === "%") {
             e.preventDefault();

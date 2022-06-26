@@ -1,32 +1,37 @@
 import axios from "axios";
 import { EmailResponseData } from "interfaces";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
-export const useEmailValidation = (value: string, duration: number = 500, setError: Function, clearErrors: Function, setLoading: Function) => {
+export const useEmailValidation = (value: string, setError: Function, clearErrors: Function, setLoading: Function, isActive: boolean) => {
+  const cancelToken = useRef(null);
   useEffect(() => {
-    let handler;
-    if (value !== "initalvalue") {
-      handler = setTimeout(async () => {
-        try {
-          const response: EmailResponseData = await axios.get(`/api/email-validator.php?email=${value === "" ? "''" : value}`);
-          if (!response.data.validation_status) {
-            await setError("email", {
-              type: "custom",
-              message: `email ${response.data.status_message}`,
-            });
-          } else {
-            clearErrors("email");
-          }
-        } catch (err) {
-          setError("email", { type: "custom", message: err });
-        } finally {
-          setLoading(false);
+    const fetchData = async () => {
+      setLoading(true);
+      if (cancelToken.current) {
+        cancelToken.current.cancel("delete");
+      }
+      cancelToken.current = axios.CancelToken.source();
+      try {
+        const response: EmailResponseData = await axios.get(`/api/email-validator.php?email=${value === "" ? "''" : value}`, {
+          cancelToken: cancelToken.current.token,
+        });
+        setLoading(false);
+        if (!response.data.validation_status) {
+          setError("email", {
+            type: "custom",
+            message: `email ${response.data.status_message}`,
+          });
+        } else {
+          clearErrors("email");
         }
-      }, 500);
-    }
-
-    return () => {
-      clearTimeout(handler);
+      } catch (err) {
+        if (axios.isCancel(err)) return;
+        setError("email", { type: "custom", message: err });
+      }
     };
-  }, [value, duration, setError, clearErrors, setLoading]);
+
+    if (isActive) {
+      fetchData();
+    }
+  }, [value]);
 };
