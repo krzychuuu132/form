@@ -63,16 +63,7 @@ const FormField = () => {
       <StyledLabel>Birth Date</StyledLabel>
       <StyledInput type="date" placeholder="Type birth date" {...register("birthDate", { required: false })} />
       <StyledLabel>Email</StyledLabel>
-      <StyledInput
-        type="email"
-        placeholder="Type email"
-        {...register("email", { required: true })}
-        onKeyPress={(e) => {
-          if (e.key === "%") {
-            e.preventDefault();
-          }
-        }}
-      />
+      <StyledInput type="email" placeholder="Type email" {...register("email", { required: true })} />
       {errors.email ? <ErrorMessage message={errors.email.message} /> : null}
       <StyledCheckboxWrapper>
         <StyledInput type="checkbox" {...register("gender", { required: false })} id="gender" />

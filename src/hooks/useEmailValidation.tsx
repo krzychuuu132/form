@@ -26,7 +26,10 @@ export const useEmailValidation = (value: string, setError: Function, clearError
         }
       } catch (err) {
         if (axios.isCancel(err)) return;
-        setError("email", { type: "custom", message: err });
+        const { status } = err.response;
+        const errorResponseMess: string = status === 403 ? `Email zawiera niepoprawne znaki` : `Coś poszło nie tak`;
+        setError("email", { type: "custom", message: errorResponseMess });
+        setLoading(false);
       }
     };
 
